@@ -26,6 +26,7 @@
     "prettier": "^2.7.1"
   },
   "prisma":{
-    "shema": "db/shema.prisma"
+    "shema": "db/shema.prisma",
+    "seed": "db/seed.js"
   }
 }
