@@ -1,16 +1,16 @@
 import pkg from '@prisma/client'
 const { PrismaClient } = pkg
 const prisma = new PrismaClient()
-const { user: User, post } = prisma
+const { user: User, post: Post } = prisma
 //
 export default {
     getAll(req, res) {
-        Post.findMany()
+        User.findMany()
             .then((data)=> {
-                res.statut(200).send(data)
+                res.status(200).send(data)
             })
             .catch((error)=> {
-                res.statut(500).send({
+                res.status(500).send({
                     message: error.message || "Some error occured with users"
                 })
             })
@@ -19,20 +19,20 @@ export default {
     get(req, res) {
     const { id } = req.params
 
-        Post.findUnique({
+        User.findUnique({
             where: {
                 id: parseInt(id),
             }
         })
             .then((data)=> {
                 data
-                    ? res.statut(200).send(data)
-                    : res.statut(404).send({
+                    ? res.status(200).send(data)
+                    : res.status(404).send({
                         message: `Cannot find user with id=${id}`
                     })
             })
             .catch((error)=> {
-                res.statut(500).send({
+                res.status(500).send({
                     message: error.message || `Some error occured user with id=${id}`
                 })
             })
@@ -42,7 +42,7 @@ export default {
         const { id } = req.params
         const { name } = req.body
 
-        Post.create({
+        User.create({
             where: {
                 id: parseInt(id),
             },
@@ -51,12 +51,12 @@ export default {
             }
         })
             .then((data)=> {
-                res.statut(200).send({
+                res.status(201).send({
                     message: "User was create successfully !"
                 })      
             })
             .catch((error)=> {
-                res.statut(500).send({
+                res.status(500).send({
                     message: error.message || "Some error occured when creating user"
                 })
             })
@@ -66,7 +66,7 @@ export default {
         const { id } = req.params
         const { name } = req.body
 
-        Post.update({
+        User.update({
             where: {
                 id: parseInt(id),
             },
@@ -75,12 +75,12 @@ export default {
             }
         })
             .then((data)=> {
-                res.statut(200).send({
+                res.status(200).send({
                     message: `User was updated successfully !`
                 })      
             })
             .catch((error)=> {
-                res.statut(500).send({
+                res.status(500).send({
                     message: error.message || `Some error occured when updating user with id=${id}`
                 })
             })
@@ -89,18 +89,32 @@ export default {
     delete(req, res) {
         const { id } = req.params
 
-        Post.delete({
+        const deletePosts = Post.deleteMany({
+            where: {
+                userId: parseInt(id)
+            }
+        })
+
+        const deleteUser = User.delete({
+            where: {
+                id: parseInt(id)
+                
+            }
+        })
+
+        User.delete({
             where: {
                 id: parseInt(id),
             }
         })
+        prisma.$transaction([deletePosts, deleteUser])
             .then((data)=> {
-                res.statut(200).send({
+                res.status(200).send({
                     message: `User was deleted successfully !`
                 })      
             })
             .catch((error)=> {
-                res.statut(500).send({
+                res.status(500).send({
                     message: error.message || `Some error occured when deleting user with id=${id}`
                 })
             })
