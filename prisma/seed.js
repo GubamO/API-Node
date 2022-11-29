@@ -30,7 +30,7 @@ main()
         process.exit(1)
     })
     .finally(async()=> {
-        await prisma.$disconnected()
+        await prisma.$disconnect()
     })
 
 
