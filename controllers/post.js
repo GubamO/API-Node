@@ -39,13 +39,9 @@ export default {
     },
 
     create(req, res) {
-        const { id } = req.params
         const { userId, title, content, description } = req.body
 
         Post.create({
-            where: {
-                id: parseInt(id),
-            },
             data: {
                 userId: parseInt(userId),
                 title: title,

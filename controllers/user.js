@@ -39,13 +39,9 @@ export default {
     },
 
     create(req, res) {
-        const { id } = req.params
         const { name } = req.body
 
         User.create({
-            where: {
-                id: parseInt(id),
-            },
             data: {
                 name: name
             }
